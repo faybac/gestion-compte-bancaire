@@ -1,5 +1,6 @@
 package fr.bacher.gcb.gestion.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
@@ -58,7 +59,7 @@ class AccountServiceTest {
 		System.out.println(	"\nUS 2: PART 2-1 : In order to retrieve some of my savings As a bank client I want to make a withdrawal from my account");
 		// Given
 		Account account = new Account(11111111111111L);
-		// When Deposit amount
+		// When Account not empty
 		String operation = TypeOperations.DEPOSIT;
 		Stream.of(new BigDecimal(1000), new BigDecimal(500)).forEach(e -> {
 			try {
@@ -71,7 +72,7 @@ class AccountServiceTest {
 		System.out.println("Deposit : 1000 AND "+Symboles.EURO_SYMBOLE +" 500 "+Symboles.EURO_SYMBOLE +" with succes");
 		System.out.println("New account balance : " + account.getSolde() + " " + Symboles.EURO_SYMBOLE);
 
-		// AND When WITHDRAWAL amount 
+		// AND WITHDRAWAL amount 
 		BigDecimal amountToRetrieve = new BigDecimal(400);
 		String operationWithdrawal = TypeOperations.WITHDRAWAL;
 		//THEN Update account
@@ -145,10 +146,10 @@ class AccountServiceTest {
 				String operation = TypeOperations.DEPOSIT;
 				BigDecimal amount = BigDecimal.ZERO;// positif amount
 		 
-		 assertThrows(OperationException.class, () -> // When : save try to update my account
+		 assertThrows(OperationException.class, () -> // When : try to save amount<=0 throws OperationException.
 			transactionService.traitementSolde(account, operation, amount)
 			);
-		 //		thrownException.expect(OperationException.class); //thrownException.expectMessage("Le montant devrait etre positif");
+		 //	thrownException.expect(OperationException.class); //thrownException.expectMessage("Le montant devrait etre positif");
 	}
 	
 	@Test
@@ -156,7 +157,7 @@ class AccountServiceTest {
 	@DisplayName("US 3 : 1- ShowHistory GivenAccount_WhenShowHistory_PrintAllHistories")
 	void GivenAccount_WhenShowHistory_PrintAllHistories() throws OperationException {
 		System.out.println("\nUS 3: GivenAccount_WhenShowHistory_PrintAllHistories");
-		// Given
+		// Given account with a positif solde
 		Account account = new Account(11111111111111L);
 		String operation = TypeOperations.DEPOSIT;
 		System.out.println("Deposit : 1000"+Symboles.EURO_SYMBOLE +" Deposit : 500"+Symboles.EURO_SYMBOLE );
@@ -168,17 +169,19 @@ class AccountServiceTest {
 			}
 		});
 		
+		// WHEN retreive (or deposit) a money to account
 		BigDecimal amountToRetrieve = new BigDecimal(200);
 		System.out.println("Retreive : " + amountToRetrieve + " " + Symboles.EURO_SYMBOLE);
-		// WHEN save money from a account
+		// AND update account
 		transactionService.traitementSolde(account, TypeOperations.WITHDRAWAL, amountToRetrieve);
-		// THEN
+		
 		System.out.println("New account balance : " + account.getSolde() + " " + Symboles.EURO_SYMBOLE);
 		System.out.println("Nombre d'operation du compte : " + account.getListMouvement().size());
 
-		logger.info("\nHISTORIQUE DU COMPTE numero {}",account.getAccountNumber());System.out.println("\\nHISTORIQUE DU COMPTE numero "+account.getAccountNumber());
+		// THEN Print History
+		logger.info("\nHISTORIQUE DU COMPTE numero {}",account.getAccountNumber()); System.out.println("\\nHISTORIQUE DU COMPTE numero "+account.getAccountNumber());
 		transactionService.showHistory(account);
-		assert(true);
+		assertEquals(3, account.getListMouvement().size()); 
 	}
 	
 	
@@ -199,23 +202,23 @@ class AccountServiceTest {
 		});
 		System.out.println("New account balance : " + account.getSolde() + " " + Symboles.EURO_SYMBOLE);
 		
-		
+		// WHEN retreive (or deposit) a money to account
 		BigDecimal amountToRetrieve = new BigDecimal(200);
 		System.out.println("Retreive : " + amountToRetrieve + " " + Symboles.EURO_SYMBOLE);
-		// WHEN save money from a account
+		// AND Update account 
 		transactionService.traitementSolde(account, TypeOperations.WITHDRAWAL, amountToRetrieve);
-		// THEN
 		
 		System.out.println("New account balance : " + account.getSolde() + " " + Symboles.EURO_SYMBOLE);
 		System.out.println("Nombre d'operation du compte : " + account.getListMouvement().size());
 
+		// THEN Print History
 		logger.info("\nHISTORIQUE DU COMPTE numero {}",account.getAccountNumber());System.out.println("\\nHISTORIQUE DU COMPTE numero "+account.getAccountNumber());
 		transactionService.showHistory(account);
 		
 		System.out.println("---------------printStatement--------------------");
 		
 		transactionService.printStatement(account);
-		assert(true);
+		assertEquals(3, account.getListMouvement().size()); 
 	}
 
 }

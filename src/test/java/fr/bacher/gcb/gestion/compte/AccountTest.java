@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.bacher.gcb.gestion.constantes.TypeOperations;
 import fr.bacher.gcb.gestion.exceptions.OperationException;
@@ -19,8 +17,6 @@ import fr.bacher.gcb.gestion.services.interfaces.IAcountService;
 
 @TestMethodOrder(OrderAnnotation.class)
 class AccountTest {
-
-	private static Logger logger = LoggerFactory.getLogger(AccountTest.class);
 
 	public static IAcountService transactionService = new AcountService();
 	
@@ -40,7 +36,7 @@ class AccountTest {
 	}
 	
 	/**
-	 * Test de plusieurs d�pots et plusieurs retrait.
+	 * Test de plusieurs depots et plusieurs retrait.
 	 * DEPOSIT of 1000, DEPOSIT of 500.99 , WITHDRAWAL 400.53 AND  WITHDRAWAL of 600.46
 	 * @throws OperationException
 	 */
@@ -54,8 +50,7 @@ class AccountTest {
 		transactionService.traitementSolde(account, TypeOperations.WITHDRAWAL, new BigDecimal(400.53));
 		transactionService.traitementSolde(account, TypeOperations.WITHDRAWAL, new BigDecimal(600.46));
 
-		//BigDecimal roundedTotal = myaAccount.getSolde().setScale(2, RoundingMode.HALF_EVEN); //Dans le cas ou je mets 20.8899967 euros
-		BigDecimal soldeAttendu=new BigDecimal(1000).add(new BigDecimal(500.99)).add (new BigDecimal(-400.53)).add(new BigDecimal(-600.46)).setScale(2, BigDecimal.ROUND_HALF_UP);//.setScale(2, RoundingMode.HALF_EVEN);
+		BigDecimal soldeAttendu=new BigDecimal(1000).add(new BigDecimal(500.99)).add (new BigDecimal(-400.53)).add(new BigDecimal(-600.46)).setScale(2, BigDecimal.ROUND_HALF_UP);
 		
 		Assertions.assertEquals(soldeAttendu, account.getSolde());
 		
